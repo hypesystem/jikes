@@ -52,8 +52,10 @@ function tryRunJavascriptPage(page, req, res, callback) {
           if(err) {
             return callback(err);
 	  }
-	  res.end(data);
-	  callback();
+	  parseViewWithVariables(data.toString(), variables, function(error, result) {
+	    res.end(result);
+	    callback();
+	  });
 	});
       });
     }
@@ -62,6 +64,16 @@ function tryRunJavascriptPage(page, req, res, callback) {
       return callback(e);
     }
   });
+}
+
+function parseViewWithVariables(raw, variables, callback) {
+  var result = raw.replace(/<print ([aA-zZ]+)>/, function(match, variable) {
+    if(!variables[variable]) {
+      return "Undefined variable: "+variable;
+    }
+    return variables[variable];
+  });
+  callback(null, result); 
 }
 
 function tryRunHtmlPage(page, req, res, callback) {
