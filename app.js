@@ -67,11 +67,41 @@ function tryRunJavascriptPage(page, req, res, callback) {
 }
 
 function parseViewWithVariables(raw, variables, callback) {
-  var result = raw.replace(/<print ([aA-zZ]+)>/, function(match, variable) {
-    if(!variables[variable]) {
-      return "Undefined variable: "+variable;
+  var result = raw.replace(/<(print|printif|printunless) ([aA-zZ]+)( [aA-zZ]+)?>/g, function(match, cmd, arg0, arg1) {
+    switch(cmd) {
+      case "print":
+        var variable = arg0;
+        if(typeof variables[variable] === "undefined") {
+          return "Undefined variable: "+variable;
+        }
+        return variables[variable];
+      case "printif":
+        var cond = arg0;
+	var variable = arg1.trim();
+        if(typeof variables[cond] === "undefined") {
+          return "Undefined condition: "+cond;
+	}
+	if(typeof variables[variable] === "undefined") {
+          return "Undefined variable: "+variable;
+	}
+	if(variables[cond]) {
+          return variables[variable]
+	}
+	return "";
+      case "printunless":
+        var cond = arg0;
+	var variable = arg1.trim();
+        if(typeof variables[cond] === "undefined") {
+          return "Undefined condition: "+cond;
+	}
+	if(typeof variables[variable] === "undefined") {
+          return "Undefined variable: "+variable;
+	}
+	if(!variables[cond]) {
+          return variables[variable]
+	}
+	return "";
     }
-    return variables[variable];
   });
   callback(null, result); 
 }
