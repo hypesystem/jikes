@@ -1,9 +1,10 @@
+process.title = "jikes!";
+var basePath = process.argv[2] || ".";
+
 var fs = require("fs");
 var vm = require("vm");
 var express = require("express");
 var TagParser = require("./lib/TagParser.js");
-
-var basePath = process.argv[2];
 
 var tagParser = new TagParser();
 tagParser.registerTag(require("./lib/tags/print.js"));
