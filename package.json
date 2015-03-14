@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/hypesystem/jikes",
   "dependencies": {
-    "express": "^4.12.2"
+    "express": "^4.12.2",
+    "lodash": "^3.5.0"
   }
 }
