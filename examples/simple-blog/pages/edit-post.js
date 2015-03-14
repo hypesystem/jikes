@@ -14,7 +14,7 @@ module.exports = function(render) {
       });
     }
 
-    render("edit-post.htm", {
+    render("layout.htm", "edit-post.htm", {
       postContent: postContent
     });
   });
